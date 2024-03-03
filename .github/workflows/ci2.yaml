@@ -15,6 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
+      - name: Update version file
+        run: |
+          git config --global user.name 'pruebasGit2'
+          git config --global user.email 'diegocardwr2@gmail.com'
+
       - name: Grants permisions
         run: chmod +x ./bin/version.sh
 
