@@ -1,0 +1,32 @@
+name: PRUEBAS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: write
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Update version file
+        run: |
+          git config --global user.name 'pruebasGit2'
+          git config --global user.email 'diegocardwr2@gmail.com'
+
+      - name: Grants permisions
+        run: chmod +x ./bin/version.sh
+
+      - name: Change version
+        id: version
+        run: echo "new_version=$(./bin/version.sh "${{ github.event.head_commit.message }}")" >> $GITHUB_OUTPUT
+
+      - name: Update version file
+        run: |
+          git status
