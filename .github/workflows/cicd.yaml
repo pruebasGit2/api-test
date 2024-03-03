@@ -44,7 +44,7 @@ jobs:
           git config --global user.name 'pruebasGit2'
           git config --global user.email 'diegocardwr2@gmail.com'
           git add .
-          git commit -am "chore: version ${{ needs.build.outputs.new_version }}"
+          git commit -am "chore: version ${{ steps.version.outputs.new_version }}"
           git push
 
       - name: Merge test to main
@@ -67,7 +67,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ needs.build.outputs.new_version }}
+          tag_name: ${{ needs.version.outputs.new_version }}
       
       - name: Checkout
         uses: actions/checkout@v4
@@ -86,13 +86,13 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DH_USERNAME }}/${{ github.event.repository.name }}:${{ needs.build.outputs.new_version }}
+          tags: ${{ secrets.DH_USERNAME }}/${{ github.event.repository.name }}:${{ needs.version.outputs.new_version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
   
   deploy:
     runs-on: ubuntu-latest
-    needs: [release]
+    needs: [version, release]
     steps:
     - uses: actions/checkout@v4
     - name: Deploy docker
@@ -104,5 +104,5 @@ jobs:
         script: |
           docker stop -f myApp 2> /dev/null || true
           docker rm -f myApp 2> /dev/null || true
-          docker run --name myApp -p 80:80 --restart=always -d ${{ secrets.DH_USERNAME }}/${{ github.event.repository.name }}:${{ needs.build.outputs.new_version }}
+          docker run --name myApp -p 80:80 --restart=always -d ${{ secrets.DH_USERNAME }}/${{ github.event.repository.name }}:${{ needs.version.outputs.new_version }}
       
