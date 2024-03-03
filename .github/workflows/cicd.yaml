@@ -32,6 +32,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Add global config
+        run: |
+          git config --global user.name 'pruebasGit2'
+          git config --global user.email 'diegocardwr2@gmail.com'
+
       - name: Grants permisions
         run: chmod +x ./bin/version.sh
 
@@ -41,8 +46,6 @@ jobs:
 
       - name: Update version file
         run: |
-          git config --global user.name 'pruebasGit2'
-          git config --global user.email 'diegocardwr2@gmail.com'
           git add .
           git commit -am "chore: version ${{ steps.version.outputs.new_version }}"
           git push
