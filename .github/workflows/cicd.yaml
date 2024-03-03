@@ -42,7 +42,7 @@ jobs:
         run: |
           git config --global user.name 'pruebasGit2'
           git config --global user.email 'diegocardwr2@gmail.com'
-          git add ./version
+          git add .
           git commit -am "chore: version ${{ needs.build.outputs.new_version }}"
           git push
 
