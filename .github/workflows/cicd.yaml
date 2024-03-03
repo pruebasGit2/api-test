@@ -23,14 +23,6 @@ jobs:
           npm install --save-dev @types/node
           npm install -g typescript
 
-      - name: Grants permisions
-        run: chmod +x ./bin/version.sh
-
-      - name: Change version
-        id: version
-        run: echo "new_version=$(./bin/version.sh "${{ github.event.head_commit.message }}")" >> $GITHUB_OUTPUT
-  
-
   version:
     runs-on: ubuntu-latest
     needs: [build]
@@ -39,6 +31,14 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Grants permisions
+        run: chmod +x ./bin/version.sh
+
+      - name: Change version
+        id: version
+        run: echo "new_version=$(./bin/version.sh "${{ github.event.head_commit.message }}")" >> $GITHUB_OUTPUT
+
       - name: Update version file
         run: |
           git config --global user.name 'pruebasGit2'
