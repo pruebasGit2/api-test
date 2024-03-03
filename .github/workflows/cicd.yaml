@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      new_version: ${{ steps.version.outputs.new_version }}
     steps:
       - uses: actions/checkout@v4
       - name: Install Node.js
@@ -29,6 +27,8 @@ jobs:
     if: success()
     permissions: 
       contents: write
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
     steps:
       - uses: actions/checkout@v4
 
