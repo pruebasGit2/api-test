@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  jenkins:
+    image: myApp
+    container_name: "app"
+    restart: always
+    networks:
+      - appN
+    ports:
+      - "3000:3000"
+
+networks:
+  appN:
