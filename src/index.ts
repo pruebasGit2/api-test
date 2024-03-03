@@ -7,4 +7,4 @@ app.use(limits);
 
 app.get("*", (_, res) => res.send("ok"));
 
-app.listen(3000, "localhost");
+app.listen(3000);
