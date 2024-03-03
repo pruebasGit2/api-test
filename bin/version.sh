@@ -8,7 +8,7 @@ commit_prefix="${commit%%:*}"
 
 # check commit prefix
 if [ "$commit_prefix" == "feat" ]; then
-    npm version minor 
+    npm version minor --git-tag-version false
 else
-    npm version patch 
+    npm version patch --git-tag-version false
 fi
