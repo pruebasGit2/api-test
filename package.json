@@ -1,9 +1,11 @@
 {
   "name": "request",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node build/index.js",
+    "build": "tsc",
     "dev": "tsc && node build/index.js"
   },
   "keywords": [],
