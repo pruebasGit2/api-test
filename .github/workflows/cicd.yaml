@@ -3,20 +3,104 @@ name: CI Build
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
 
+      - name: Install npm dependencies
+        run: |
+          npm ci --only=production
+          npm install --save-dev @types/node
+          npm install -g typescript
+
+      - name: Grants permisions
+        run: chmod +x ./bin/version.sh
+
+      - name: Change version
+        id: version
+        run: echo "new_version=$(./bin/version.sh "${{ github.event.head_commit.message }}")" >> $GITHUB_OUTPUT
+  
+
+  version:
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: success()
+    permissions: 
+      contents: write
+    steps:
+      - name: Update version file
+        run: |
+          git config --global user.name 'pruebasGit2'
+          git config --global user.email 'diegocardwr2@gmail.com'
+          git add ./version
+          git commit -am "chore: version ${{ needs.build.outputs.new_version }}"
+          git push
+
+      - name: Merge test to main
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build, version]
+    if: success()
+    permissions: 
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.build.outputs.new_version }}
+      
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DH_USERNAME }}
+          password: ${{ secrets.DH_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DH_USERNAME }}/${{ github.event.repository.name }}:${{ needs.build.outputs.new_version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+  
   deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: executing remote ssh commands using password
+    - name: Deploy docker
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.DEPLOY_HOST }}
         username: ${{ secrets.DEPLOY_USERNAME }}
         key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         script: |
-          docker ps -a
+          docker stop -f myApp 2> /dev/null || true
+          docker rm -f myApp 2> /dev/null || true
+          docker run --name myApp -p 80:80 --restart=always -d ${{ secrets.DH_USERNAME }}/${{ github.event.repository.name }}:${{ needs.build.outputs.new_version }}
       
