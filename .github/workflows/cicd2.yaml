@@ -10,15 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+
+    - name: pepe
+      run: |
+        ping -c 4 207.248.81.157
+
     - name: Deploy docker
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.DEPLOY_HOST }}
-        username: ${{ secrets.DEPLOY_USERNAME }}
+        host: 207.248.81.157
+        username: mediafile-admin
         key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-        proxy_host: ${{ secrets.DEPLOY_PROXY_HOST }}
-        proxy_username: ${{ secrets.DEPLOY_PROXY_USERNAME }}
+
+        proxy_host: 10.154.12.163
+        proxy_username: mediafilebd-admin
         proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
+
         script: |
           docker stop -f myApp 2> /dev/null || true
           docker rm -f myApp 2> /dev/null || true
