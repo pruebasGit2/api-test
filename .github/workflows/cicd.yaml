@@ -104,6 +104,9 @@ jobs:
         host: ${{ secrets.DEPLOY_HOST }}
         username: ${{ secrets.DEPLOY_USERNAME }}
         key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+        proxy_host: ${{ secrets.DEPLOY_PROXY_HOST }}
+        proxy_username: ${{ secrets.DEPLOY_PROXY_USERNAME }}
+        proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
         script: |
           docker stop -f myApp 2> /dev/null || true
           docker rm -f myApp 2> /dev/null || true
