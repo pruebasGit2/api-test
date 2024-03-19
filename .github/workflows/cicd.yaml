@@ -3,7 +3,7 @@ name: CI Build
 on:
   push:
     branches:
-      - dev2
+      - test
 
 jobs:
   build:
@@ -95,20 +95,24 @@ jobs:
   
   deploy:
     runs-on: ubuntu-latest
-    needs: [version, release]
     steps:
     - uses: actions/checkout@v4
+
     - name: Deploy docker
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.DEPLOY_HOST }}
-        username: ${{ secrets.DEPLOY_USERNAME }}
-        key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-        proxy_host: ${{ secrets.DEPLOY_PROXY_HOST }}
-        proxy_username: ${{ secrets.DEPLOY_PROXY_USERNAME }}
-        proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
+        host: 10.154.12.163
+        port: 22
+        username: mediafilebd-admin
+        key: ${{ secrets.DEPLOY_PROXY_KEY }}
+  
+        proxy_host: 0.tcp.ngrok.io
+        proxy_port: 15874
+        proxy_username: mediafile-admin
+        proxy_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+
         script: |
           docker stop -f myApp 2> /dev/null || true
           docker rm -f myApp 2> /dev/null || true
-          docker run --name myApp -p 3000:3000 --restart=always -d ${{ secrets.DH_USERNAME }}/${{ github.event.repository.name }}:${{ needs.version.outputs.new_version }}
+          docker run --name myApp -p 3000:3000 --restart=always -d ${{ secrets.DH_USERNAME }}/${{ github.event.repository.name }}:0.3.0
       
