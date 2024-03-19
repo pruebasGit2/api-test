@@ -20,6 +20,7 @@ jobs:
         key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
 
         proxy_host: 10.154.12.163
+        proxy_port: 22
         proxy_username: mediafilebd-admin
         proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
   
