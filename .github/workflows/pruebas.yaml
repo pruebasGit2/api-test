@@ -30,7 +30,7 @@ jobs:
           proxy_username: ${{ secrets.DEPLOY_PROXY_USERNAME }}
           proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
 
-          script: ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+          script: |
             docker ps -a
           #cd database-service
           #git pull origin main
