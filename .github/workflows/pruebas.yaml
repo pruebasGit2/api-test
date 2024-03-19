@@ -3,30 +3,31 @@ name: PRUEBAS
 on:
   push:
     branches:
-      - dev3
+      - main
 
 jobs:
-  version:
+  deploy:
     runs-on: ubuntu-latest
-    permissions: 
-      contents: write
-    outputs:
-      new_version: ${{ steps.version.outputs.new_version }}
+    needs: [publish]
     steps:
-      - uses: actions/checkout@master
+    - uses: actions/checkout@v4
 
-      - name: Update version file
-        run: |
-          git config --global user.name 'pruebasGit2'
-          git config --global user.email 'diegocardwr2@gmail.com'
+    - name: Deploy docker
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.DEPLOY_HOST }}
+        port: ${{ secrets.DEPLOY_PORT }}
+        username: ${{ secrets.DEPLOY_USERNAME }}
+        key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
 
-      - name: Grants permisions
-        run: chmod +x ./bin/version.sh
+        proxy_host: ${{ secrets.DEPLOY_PROXY_HOST }}
+        proxy_port: ${{ secrets.DEPLOY_PROXY_PORT }}
+        proxy_username: ${{ secrets.DEPLOY_PROXY_USERNAME }}
+        proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
 
-      - name: Change version
-        id: version
-        run: echo "new_version=$(./bin/version.sh "${{ github.event.head_commit.message }}")" >> $GITHUB_OUTPUT
-
-      - name: Update version file
-        run: |
-          git status
+        script: |
+          cd database-service
+          git pull origin main
+          
+          docker compose down
+          ${{ secrets.DEPLOY_ENV }} VERSION=1.1.1 docker compose up -d
