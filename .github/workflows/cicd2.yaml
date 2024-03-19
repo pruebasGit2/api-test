@@ -11,10 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: pepe
-      run: |
-        ping -c 4 207.248.81.157
-
     - name: Deploy docker
       uses: appleboy/ssh-action@v1.0.3
       with:
