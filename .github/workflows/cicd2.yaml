@@ -14,16 +14,16 @@ jobs:
     - name: Deploy docker
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: 0.tcp.ngrok.io
-        username: mediafile-admin
-        port: 15874
-        key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-
-        proxy_host: 10.154.12.163
-        proxy_port: 22
-        proxy_username: mediafilebd-admin
-        proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
+        host: 10.154.12.163
+        port: 22
+        username: mediafilebd-admin
+        key: ${{ secrets.DEPLOY_PROXY_KEY }}
   
+        proxy_host: 0.tcp.ngrok.io
+        proxy_port: 15874
+        proxy_username: mediafile-admin
+        proxy_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+
         script: docker ps -a
         #docker stop -f myApp 2> /dev/null || true
         #docker rm -f myApp 2> /dev/null || true
