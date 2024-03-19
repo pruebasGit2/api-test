@@ -23,7 +23,7 @@ jobs:
         #proxy_username: mediafilebd-admin
         #proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
   
-        script: docker ps -a
+        script: ping -c 4 10.154.12.163
         #docker stop -f myApp 2> /dev/null || true
         #docker rm -f myApp 2> /dev/null || true
         #docker run --name myApp -p 3000:3000 --restart=always -d ${{ secrets.DH_USERNAME }}/${{ github.event.repository.name }}:0.3.0
