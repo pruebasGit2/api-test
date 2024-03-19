@@ -3,7 +3,7 @@ name: CI Build
 on:
   push:
     branches:
-      - dev3
+      - main
 
 jobs:
   deploy:
@@ -18,8 +18,9 @@ jobs:
     - name: Deploy docker
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: 207.248.81.157
+        host: 0.tcp.ngrok.io
         username: mediafile-admin
+        port: 15874
         key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
 
         proxy_host: 10.154.12.163
