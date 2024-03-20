@@ -31,8 +31,5 @@ jobs:
           proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
 
           script: |
-            cd database-service
-            git pull origin main
-            
-            docker compose down
-            ${{ secrets.DEPLOY_ENV }} docker compose up -d
+            cat ${{ secrets.DEPLOY_ENV }} >> secret
+            cat secret
