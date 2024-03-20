@@ -30,10 +30,15 @@ jobs:
           proxy_username: ${{ secrets.DEPLOY_PROXY_USERNAME }}
           proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
 
-          envs: PG_USER
+          envs: PG_USER,PG_PASSWORD,PG_ADMIN_EMAIL,PG_ADMIN_PASSWORD,APP_VERSION
 
           script: |
             echo "$PG_USER"
+          cd database-service
+          git pull origin main
+          
+          docker compose down
+          docker compose up -d
 
         env:
           PG_USER: "${{secrets.PG_USER}}"
