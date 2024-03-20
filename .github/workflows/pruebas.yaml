@@ -31,5 +31,4 @@ jobs:
           proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
 
           script: |
-            cat ${{ secrets.DEPLOY_ENV }} >> secret
-            cat secret
+            echo ${{ secrets.DEPLOY_ENV }}
