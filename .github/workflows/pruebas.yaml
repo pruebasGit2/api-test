@@ -19,7 +19,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    depends_on: [test]
+    needs: [test]
     steps:
       - uses: actions/checkout@v4
 
