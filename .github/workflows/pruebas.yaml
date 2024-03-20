@@ -6,7 +6,8 @@ on:
       - main
 
 jobs:
-  deploy:
+
+  test:
     runs-on: ubuntu-latest
     outputs:
       new_version: ${{ steps.version.outputs.new_version }}
@@ -15,6 +16,11 @@ jobs:
 
       - id: version
         run: echo "new_version=v1.1.2" >> $GITHUB_OUTPUT
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Deploy docker
         uses: appleboy/ssh-action@v1.0.3
@@ -33,16 +39,12 @@ jobs:
           envs: PG_USER,PG_PASSWORD,PG_ADMIN_EMAIL,PG_ADMIN_PASSWORD,APP_VERSION
 
           script: |
-            cd database-service
-            git pull origin main
-            
-            docker compose down
-            docker compose up -d
+            echo $APP_VERSION
 
         env:
           PG_USER: ${{secrets.PG_USER}}
           PG_PASSWORD: ${{secrets.PG_PASSWORD}}
           PG_ADMIN_EMAIL: ${{secrets.PG_ADMIN_EMAIL}}
           PG_ADMIN_PASSWORD: ${{secrets.PG_ADMIN_PASSWORD}}
-          APP_VERSION: ${{steps.version.outputs.new_version}}
+          APP_VERSION: ${{ needs.test.outputs.new_version }}
  
