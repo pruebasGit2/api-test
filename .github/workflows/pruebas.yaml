@@ -30,6 +30,8 @@ jobs:
           proxy_username: ${{ secrets.DEPLOY_PROXY_USERNAME }}
           proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
 
+          envs: PG_USER
+
           script: |
             echo "$PG_USER"
 
