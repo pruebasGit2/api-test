@@ -34,11 +34,11 @@ jobs:
 
           script: |
             echo "$PG_USER"
-          cd database-service
-          git pull origin main
-          
-          docker compose down
-          docker compose up -d
+            cd database-service
+            git pull origin main
+            
+            docker compose down
+            docker compose up -d
 
         env:
           PG_USER: "${{secrets.PG_USER}}"
