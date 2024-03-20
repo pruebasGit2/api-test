@@ -8,17 +8,17 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
     steps:
       - uses: actions/checkout@v4
+
+      - id: version
+        run: echo "new_version=v1.1.1" >> $GITHUB_OUTPUT
 
       - name: Deploy docker
         uses: appleboy/ssh-action@v1.0.3
         with:
-
-          #host: ${{ secrets.DEPLOY_PROXY_HOST }}
-          #port: ${{ secrets.DEPLOY_PROXY_PORT }}
-          #username: ${{ secrets.DEPLOY_PROXY_USERNAME }}
-          #key: ${{ secrets.DEPLOY_PROXY_KEY }}
 
           host: ${{ secrets.DEPLOY_HOST }}
           port: ${{ secrets.DEPLOY_PORT }}
@@ -33,7 +33,6 @@ jobs:
           envs: PG_USER,PG_PASSWORD,PG_ADMIN_EMAIL,PG_ADMIN_PASSWORD,APP_VERSION
 
           script: |
-            echo "$PG_USER"
             cd database-service
             git pull origin main
             
@@ -41,9 +40,9 @@ jobs:
             docker compose up -d
 
         env:
-          PG_USER: "${{secrets.PG_USER}}"
+          PG_USER: ${{secrets.PG_USER}}
           PG_PASSWORD: ${{secrets.PG_PASSWORD}}
           PG_ADMIN_EMAIL: ${{secrets.PG_ADMIN_EMAIL}}
           PG_ADMIN_PASSWORD: ${{secrets.PG_ADMIN_PASSWORD}}
-          APP_VERSION: ${{secrets.APP_VERSION}}
+          APP_VERSION: ${{steps.version.outputs.new_version}}
  
