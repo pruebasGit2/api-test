@@ -6,6 +6,7 @@ on:
       - main
 
 jobs:
+
   test:
     runs-on: ubuntu-latest
     outputs:
@@ -27,7 +28,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [test2]
+    needs: [test2, test]
     steps:
       - uses: actions/checkout@v4
 
