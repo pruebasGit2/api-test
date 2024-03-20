@@ -31,4 +31,12 @@ jobs:
           proxy_key: ${{ secrets.DEPLOY_PROXY_KEY }}
 
           script: |
-            echo ${{ secrets.DEPLOY_ENV }}
+            echo "$PG_USER"
+
+        env:
+          PG_USER: ${{secrets.PG_USER}}
+          PG_PASSWORD: ${{secrets.PG_PASSWORD}}
+          PG_ADMIN_EMAIL: ${{secrets.PG_ADMIN_EMAIL}}
+          PG_ADMIN_PASSWORD: ${{secrets.PG_ADMIN_PASSWORD}}
+          APP_VERSION: ${{secrets.APP_VERSION}}
+ 
